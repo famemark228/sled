@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Плавающее окно</title>
+</head>
+<body>
+  <button onclick="openFloatingWindow()">Открыть окно</button>
+
+  <script>
+    let popup = null;
+
+    function openFloatingWindow() {
+      if (popup && !popup.closed) {
+        popup.focus();
+        return;
+      }
+
+      popup = window.open('', '', 'width=200,height=150');
+
+      // Добавляем содержимое в окно
+      popup.document.write(`
+        <html>
+          <head>
+            <title>Плавающее окно</title>
+            <style>
+              body {
+                margin: 0;
+                padding: 20px;
+                background: #111;
+                color: white;
+                font-family: sans-serif;
+                text-align: center;
+              }
+              button {
+                margin-top: 10px;
+                padding: 5px 10px;
+              }
+            </style>
+          </head>
+          <body>
+            <p>Окно следует за курсором</p>
+            <button onclick="window.close()">Закрыть</button>
+          </body>
+        </html>
+      `);
+
+      // Обновляем позицию окна при движении мыши
+      document.addEventListener('mousemove', moveWindowWithMouse);
+    }
+
+    function moveWindowWithMouse(e) {
+      if (popup && !popup.closed) {
+        // Смещение окна на 20px вправо и вниз от курсора
+        popup.moveTo(e.screenX + 20, e.screenY + 20);
+      } else {
+        // Если окно закрыто — удаляем обработчик
+        document.removeEventListener('mousemove', moveWindowWithMouse);
+      }
+    }
+  </script>
+</body>
+</html>
